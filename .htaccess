@@ -1,0 +1,25 @@
+<IfModule mod_headers.c>
+    <Files "apple-app-site-association">
+        Header set Content-Type "application/json"
+    </Files>
+    <Files "assetlinks.json">
+        Header set Content-Type "application/json"
+    </Files>
+</IfModule>
+
+RewriteEngine On
+
+# ADDED: Allow .well-known folder to bypass Laravel routing
+RewriteRule ^\.well-known/(.*)$ public/.well-known/$1 [L]
+
+# YOUR ORIGINAL CODE (UNTOUCHED):
+RewriteCond %{REQUEST_FILENAME} -d [OR]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ ^$1 [N]
+
+RewriteCond %{REQUEST_URI} (\.\w+$) [NC]
+RewriteRule ^(.*)$ public/$1
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ server.php

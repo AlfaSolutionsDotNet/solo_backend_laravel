@@ -1,0 +1,36 @@
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.*
+!.env.example
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+/.fleet
+/.idea
+/.vscode
+
+# Backup and database files
+*.zip
+*.tar.gz
+*.sql
+*.bak
+
+# macOS files
+.DS_Store
+
+# Laravel logs and cache
+/storage/logs/*.log
+/storage/framework/cache/data/*
+
+# Private keys
+*.pem
+*.key
+/config/googleCredentials.json

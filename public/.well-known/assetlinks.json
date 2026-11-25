@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.services.solo",
+      "sha256_cert_fingerprints": [
+        "89:4E:FA:4B:44:78:49:E1:FE:28:ED:CD:20:06:30:0F:44:79:65:62:0C:BE:33:82:88:5A:38:08:DD:ED:45:B0"
+      ]
+    }
+  }
+]

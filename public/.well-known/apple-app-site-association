@@ -1,0 +1,37 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "DSTCD23XTU.com.services.solo",
+        "paths": [
+          "/share*",
+          "/post/*",
+          "/posts/*",
+          "/reel/*",
+          "/reels/*",
+          "/user/*",
+          "/profile/*",
+          "/room/*",
+          "/rooms/*",
+          "*"
+        ]
+      },
+      {
+        "appID": "WGTZ762S3W.com.services.solo",
+        "paths": [
+          "/share*",
+          "/post/*",
+          "/posts/*",
+          "/reel/*",
+          "/reels/*",
+          "/user/*",
+          "/profile/*",
+          "/room/*",
+          "/rooms/*",
+          "*"
+        ]
+      }
+    ]
+  }
+}
