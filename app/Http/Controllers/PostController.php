@@ -830,6 +830,7 @@ public function explorePosts(Request $request)
         'country' => 'nullable|string|max:100',
         'interest_ids' => 'nullable|array|min:1',
         'interest_ids.*' => 'integer',
+        'keyword' => 'nullable|string|max:255',
     ]);
 
     if ($validator->fails()) {
@@ -882,6 +883,18 @@ public function explorePosts(Request $request)
         });
     }
 
+    // Match the same description and tag substrings as the app, across the
+    // entire eligible scope before applying pagination.
+    if ($request->filled('keyword')) {
+        $keyword = trim($request->input('keyword'));
+        if ($keyword !== '') {
+            $baseQuery->where(function ($query) use ($keyword) {
+                $query->whereRaw("INSTR(LOWER(COALESCE(`desc`, '')), LOWER(?)) > 0", [$keyword])
+                    ->orWhereRaw("INSTR(LOWER(COALESCE(tags, '')), LOWER(?)) > 0", [$keyword]);
+            });
+        }
+    }
+
     // RADIUS FILTER
     if ($request->filled(['latitude', 'longitude', 'radius'])) {
         $lat = $request->latitude;
@@ -900,19 +913,16 @@ public function explorePosts(Request $request)
     // LOCATION PRIORITY FETCH
     $allPostsQuery = clone $baseQuery;
 
-    if ($request->filled('zip_code')) {
-        $allPostsQuery->where('zip_code', $request->zip_code);
-    } elseif ($request->filled('city')) {
-        $allPostsQuery->where('city', $request->city);
-    } elseif ($request->filled('state')) {
-        $allPostsQuery->where('state', $request->state);
-    } elseif ($request->filled('country')) {
-        $allPostsQuery->where('country', $request->country);
+    foreach (['zip_code', 'city', 'state', 'country'] as $field) {
+        if ($request->filled($field)) {
+            $allPostsQuery->where($field, $request->input($field));
+        }
     }
 
-    // FALLBACK: if no location or no posts found, just use baseQuery
+    // Fetch one page from the complete filtered result set.
     $allPosts = $allPostsQuery
         ->orderBy('created_at', 'desc')
+        ->orderBy('id', 'desc')
         ->offset($start)
         ->limit($limit)
         ->get();
@@ -926,28 +936,10 @@ public function explorePosts(Request $request)
         ]);
     }
 
-    // FREE / PAID INTERLEAVING
-    $freePosts = $allPosts->where('is_paid', false)->values();
-    $paidPosts = $allPosts->where('is_paid', true)->values();
-
-    $requiredPaidCount = intdiv($freePosts->count(), 3);
-    $paidPosts = $paidPosts->take($requiredPaidCount);
-
-    $finalPosts = [];
-    $paidIndex = 0;
-
-    foreach ($freePosts as $index => $post) {
-        $finalPosts[] = $post;
-
-        if (($index + 1) % 3 === 0 && $paidIndex < $paidPosts->count()) {
-            $finalPosts[] = $paidPosts[$paidIndex++];
-        }
-    }
-
     return response()->json([
         'status' => true,
         'message' => 'Explore posts fetched successfully',
-        'data' => $finalPosts,
+        'data' => $allPosts,
     ]);
 }
 
