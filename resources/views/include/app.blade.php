@@ -185,6 +185,13 @@
                             </a>
                         </li>
                         <hr>
+                        @foreach (['community-guidelines' => 'Community Guidelines', 'copyright-ip-policy' => 'Copyright / IP Policy', 'payment-terms' => 'Payment Terms', 'user-guide' => 'User Guide'] as $slug => $title)
+                        <li class="sideBarli">
+                            <a href="{{ route('documents.edit', $slug) }}" class="nav-link">
+                                <i data-feather="file-text"></i><span>{{ $title }}</span>
+                            </a>
+                        </li>
+                        @endforeach
                         <li class="sideBarli privacySideA">
                             <a href="{{ route('viewPrivacy') }}" class="nav-link">
                                 <i data-feather="shield"></i>

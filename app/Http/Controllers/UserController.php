@@ -572,7 +572,36 @@ class UserController extends Controller
             return response()->json(['status' => false, 'message' => $msg]);
         }
 
+        // Social identities are accepted only after verifying Google's signed ID token.
+        if ((string) $request->login_type === '0') {
+            $clientIds = config('services.google_sign_in.client_ids', []);
+            $token = $request->input('google_id_token');
+            if (!$token || empty($clientIds)) {
+                return response()->json(['status' => false, 'message' => 'Google sign-in is unavailable or could not be verified.'], 401);
+            }
+            try {
+                $client = new \Google\Client();
+                // The library verifies signature, issuer and expiry; enforce the audience below.
+                $claims = $client->verifyIdToken($token);
+            } catch (\Throwable $exception) {
+                $claims = false;
+            }
+            if (!is_array($claims) || empty($claims['aud']) ||
+                !in_array($claims['aud'], $clientIds, true) ||
+                empty($claims['sub']) || empty($claims['email']) ||
+                empty($claims['exp']) || !is_numeric($claims['exp']) || $claims['exp'] <= time() ||
+                ($claims['email_verified'] ?? false) !== true ||
+                strcasecmp(trim($claims['email']), trim($request->identity)) !== 0) {
+                return response()->json(['status' => false, 'message' => 'Google sign-in could not be verified.'], 401);
+            }
+            $request->merge(['identity' => $claims['email']]);
+        }
+
         $user = User::where('identity', $request->identity)->first();
+
+        if ($user && (int) $user->login_type === 0 && (string) $request->login_type !== '0') {
+            return response()->json(['status' => false, 'message' => 'Please sign in with Google.'], 401);
+        }
 
         if ($user) {
             $user->device_type = (int) $request->device_type;

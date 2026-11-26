@@ -99,6 +99,11 @@ Route::post('interestList', [InterestController::class, 'interestList'])->middle
 Route::post('updateInterest', [InterestController::class, 'updateInterest'])->middleware(['checkLogin'])->name('updateInterest');
 Route::post('deleteInterest/{id}', [InterestController::class, 'deleteInterest'])->middleware(['checkLogin'])->name('deleteInterest');
 
+// Admin-managed legal and support documents.
+Route::get('documents/{slug}/edit', [PagesController::class, 'editDocument'])->middleware(['checkLogin'])->name('documents.edit');
+Route::post('documents/{slug}', [PagesController::class, 'saveDocument'])->middleware(['checkLogin'])->name('documents.save');
+Route::get('documents/{slug}', [PagesController::class, 'showDocument'])->name('documents.show');
+
 // Pages Routes
 
 Route::get('deleteStoryFromWeb', [PostController::class, 'deleteStoryFromWeb'])->name('deleteStoryFromWeb');

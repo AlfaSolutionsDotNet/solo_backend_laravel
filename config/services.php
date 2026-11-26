@@ -14,6 +14,10 @@ return [
     |
     */
 
+    'google_sign_in' => [
+        'client_ids' => array_values(array_filter(array_map('trim', explode(',', env('GOOGLE_SIGN_IN_CLIENT_IDS', ''))))),
+    ],
+
     'csc' => [
         'base_url' => 'https://api.countrystatecity.in/v1',
         'key' => env('CSC_API_KEY'),
