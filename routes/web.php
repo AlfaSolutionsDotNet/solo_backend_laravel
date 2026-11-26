@@ -104,6 +104,11 @@ Route::get('documents/{slug}/edit', [PagesController::class, 'editDocument'])->m
 Route::post('documents/{slug}', [PagesController::class, 'saveDocument'])->middleware(['checkLogin'])->name('documents.save');
 Route::get('documents/{slug}', [PagesController::class, 'showDocument'])->name('documents.show');
 
+// Serve locally stored uploads if the host has no public/storage symlink.
+// Existing public files are served by the web server before Laravel is reached.
+Route::get('storage/uploads/{filename}', [\App\Http\Controllers\PublicUploadController::class, 'show'])
+    ->where('filename', '[^/]+');
+
 // Pages Routes
 
 Route::get('deleteStoryFromWeb', [PostController::class, 'deleteStoryFromWeb'])->name('deleteStoryFromWeb');
