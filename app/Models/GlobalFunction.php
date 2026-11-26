@@ -223,7 +223,8 @@ class GlobalFunction extends Model
         ];
 
         $storageDisk = $storageConfig[$storageType]['disk'] ?? 'public';
-        $baseUrl = $storageConfig[$storageType]['base_url'] ?? env('APP_URL') . 'storage/';
+        $baseUrl = $storageConfig[$storageType]['base_url'] ?? (rtrim(env('APP_URL', ''), '/') . '/storage/');
+        $baseUrl = rtrim($baseUrl, '/') . '/';
 
         $fileName = time() . '_' . env('APP_NAME') . '_' . str_replace(" ", "_", $file->getClientOriginalName());
         $appName = env('APP_NAME') ? env('APP_NAME') . '/' : '';

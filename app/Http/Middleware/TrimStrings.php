@@ -11,6 +11,15 @@ class TrimStrings extends Middleware
      *
      * @var array<int, string>
      */
+    protected function transform($key, $value)
+    {
+        if ($key === 'desc' && request()->is('api/addPost')) {
+            return $value;
+        }
+
+        return parent::transform($key, $value);
+    }
+
     protected $except = [
         'current_password',
         'password',
