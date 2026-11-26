@@ -36,6 +36,11 @@
     <link href="{{ asset('asset/css/style.css') }}" rel="stylesheet">
 
 
+<style>
+        .main-sidebar .sidebar-menu li.documentSideA a { height: auto; min-height: 40px; padding-top: 8px; padding-bottom: 8px; }
+        .main-sidebar .sidebar-menu li.documentSideA a span { line-height: 1.3; }
+        .main-sidebar .sidebar-menu li.documentSideA a .feather { flex-shrink: 0; }
+    </style>
 </head>
 
 <body>
@@ -186,7 +191,7 @@
                         </li>
                         <hr>
                         @foreach (['community-guidelines' => 'Community Guidelines', 'copyright-ip-policy' => 'Copyright / IP Policy', 'payment-terms' => 'Payment Terms', 'user-guide' => 'User Guide'] as $slug => $title)
-                        <li class="sideBarli">
+                        <li class="sideBarli documentSideA">
                             <a href="{{ route('documents.edit', $slug) }}" class="nav-link">
                                 <i data-feather="file-text"></i><span>{{ $title }}</span>
                             </a>

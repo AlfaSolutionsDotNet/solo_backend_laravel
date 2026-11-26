@@ -117,7 +117,7 @@ class PagesController extends Controller
         abort_unless(isset(self::DOCUMENTS[$slug]), 404);
         $document = DB::table('legal_documents')->where('slug', $slug)->where('published', true)->first();
         abort_unless($document && trim($document->content) !== '', 404);
-        return response('<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"><meta charset="utf-8"><title>'.e(self::DOCUMENTS[$slug]).'</title></head><body><h1>'.e(self::DOCUMENTS[$slug]).'</h1><p>'.nl2br(e($document->content)).'</p></body></html>');
+        return response('<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"><meta charset="utf-8"><title>'.e(self::DOCUMENTS[$slug]).'</title></head><body><h1>'.e(self::DOCUMENTS[$slug]).'</h1><div>'.$document->content.'</div></body></html>')->header('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; img-src https: data:; base-uri 'none'; form-action 'none'");
     }
 
 }

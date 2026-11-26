@@ -6,10 +6,18 @@
     <form method="post" action="{{ route('documents.save', $slug) }}">
         @csrf
         <label for="content">Content</label>
-        <textarea class="form-control" id="content" name="content" rows="18">{{ old('content', $document->content ?? 'Sample content: Please replace this text before publishing.') }}</textarea>
+        <textarea class="summernote-simple" id="content" name="content" rows="18">{{ old('content', $document->content ?? 'Sample content: Please replace this text before publishing.') }}</textarea>
         <label class="mt-3"><input type="checkbox" name="published" value="1" {{ old('published', $document->published ?? false) ? 'checked' : '' }}> Published</label>
         <div class="mt-3"><button type="submit" class="btn theme-btn text-white">Save</button>
         @if ($document && $document->published) <a href="{{ route('documents.show', $slug) }}" target="_blank" rel="noopener" class="btn btn-secondary">Preview</a> @endif</div>
     </form>
 </div></div>
+@endsection
+
+@section('header')
+<script>
+    $(document).ready(function () {
+        $('#content').summernote({ height: 550 });
+    });
+</script>
 @endsection
